@@ -1,5 +1,7 @@
 from django.db import models
-
+from django.db.models import Avg
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth import models as auth_models
 class Product(models.Model):
     name = models.CharField(max_length=50, blank=False)
     description = models.TextField(blank=True)
@@ -17,3 +19,17 @@ class Product(models.Model):
             return f"Age {self.minimum_age_appropriate}"
         else:
             return f"Ages {self.minimum_age_appropriate} to {self.maximum_age_appropriate}"
+    
+    def avg_rating(self):
+        return self.review_set.aggregate(Avg('stars'))['stars__avg']
+
+
+class Review(models.Model):
+    stars = models.IntegerField(default=1, blank=False, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    review = models.TextField(default="", blank=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(auth_models.User, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return F"Review for {self.product.name}, {self.stars} stars ({' '.join(['*'for _ in range(self.stars)])})"
+
