@@ -10,5 +10,6 @@
 
 ## Feedback
 
-Once you commit and submit your work to Github, I'll update this section with feedback.
+S
 
+Cool job on the stars!  Nice bits of javascript there.  You can also do this straight-up with Django, but well done with your method.
